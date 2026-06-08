@@ -29,3 +29,35 @@ button {
   padding: 10px 20px;
   cursor: pointer;
 }
+
+.expense-card {
+  background: white;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.summary-container {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.summary-card {
+  flex: 1;
+  background: white;
+  padding: 15px;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.summary-card h3 {
+  margin: 0;
+}
+
+.summary-card p {
+  font-size: 24px;
+  font-weight: bold;
+}
