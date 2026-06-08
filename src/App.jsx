@@ -7,41 +7,35 @@ import ExportButton from "./components/ExportButton";
 
 function App() {
   const [expenses, setExpenses] = useState(() => {
-    const savedExpenses =
-      localStorage.getItem("expenses");
-
-    return savedExpenses
-      ? JSON.parse(savedExpenses)
-      : [];
+    const savedExpenses = localStorage.getItem("expenses");
+    return savedExpenses ? JSON.parse(savedExpenses) : [];
   });
 
-  const [selectedCategory, setSelectedCategory] =
-    useState("All");
+  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [editingExpense, setEditingExpense] = useState(null);
 
-  const [searchTerm, setSearchTerm] =
-    useState("");
-
-  const [editingExpense, setEditingExpense] =
-    useState(null);
+  const [darkMode, setDarkMode] = useState(() => {
+    const savedTheme = localStorage.getItem("darkMode");
+    return savedTheme ? JSON.parse(savedTheme) : false;
+  });
 
   useEffect(() => {
-    localStorage.setItem(
-      "expenses",
-      JSON.stringify(expenses)
-    );
+    localStorage.setItem("expenses", JSON.stringify(expenses));
   }, [expenses]);
+
+  useEffect(() => {
+    localStorage.setItem("darkMode", JSON.stringify(darkMode));
+  }, [darkMode]);
 
   const addExpense = (expense) => {
     setExpenses([...expenses, expense]);
   };
 
-  const updateExpense = (
-    updatedExpense
-  ) => {
+  const updateExpense = (updatedExpense) => {
     setExpenses(
       expenses.map((expense) =>
-        expense.id ===
-        updatedExpense.id
+        expense.id === updatedExpense.id
           ? updatedExpense
           : expense
       )
@@ -56,48 +50,54 @@ function App() {
     );
   };
 
-  const filteredExpenses =
-    expenses.filter((expense) => {
+  const filteredExpenses = expenses.filter(
+    (expense) => {
       const matchesCategory =
         selectedCategory === "All" ||
-        expense.category ===
-          selectedCategory;
+        expense.category === selectedCategory;
 
       const matchesSearch =
         expense.title
           .toLowerCase()
-          .includes(
-            searchTerm.toLowerCase()
-          );
+          .includes(searchTerm.toLowerCase());
 
-      return (
-        matchesCategory &&
-        matchesSearch
-      );
-    });
+      return matchesCategory && matchesSearch;
+    }
+  );
 
   return (
-    <div className="container">
-      <h1>Expense Tracker</h1>
+    <div
+      className={
+        darkMode
+          ? "container dark-mode"
+          : "container"
+      }
+    >
+      <div className="header">
+        <h1>Expense Tracker</h1>
+
+        <button
+          className="theme-btn"
+          onClick={() =>
+            setDarkMode(!darkMode)
+          }
+        >
+          {darkMode ? "☀️ Light" : "🌙 Dark"}
+        </button>
+      </div>
 
       <ExpenseForm
         addExpense={addExpense}
         updateExpense={updateExpense}
         editingExpense={editingExpense}
-        setEditingExpense={
-          setEditingExpense
-        }
+        setEditingExpense={setEditingExpense}
       />
 
       <Summary expenses={expenses} />
 
-      <ExportButton
-        expenses={expenses}
-      />
+      <ExportButton expenses={expenses} />
 
-      <ExpenseChart
-        expenses={expenses}
-      />
+      <ExpenseChart expenses={expenses} />
 
       <div className="filter-container">
         <label>
@@ -146,9 +146,7 @@ function App() {
       <ExpenseList
         expenses={filteredExpenses}
         deleteExpense={deleteExpense}
-        setEditingExpense={
-          setEditingExpense
-        }
+        setEditingExpense={setEditingExpense}
       />
     </div>
   );
