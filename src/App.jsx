@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import ExpenseForm from "./components/ExpenseForm";
 import ExpenseList from "./components/ExpenseList";
 import Summary from "./components/Summary";
+import ExpenseChart from "./components/ExpenseChart";
+import ExportButton from "./components/ExportButton";
 
 function App() {
   const [expenses, setExpenses] = useState(() => {
@@ -15,6 +17,9 @@ function App() {
 
   const [selectedCategory, setSelectedCategory] =
     useState("All");
+
+  const [searchTerm, setSearchTerm] =
+    useState("");
 
   useEffect(() => {
     localStorage.setItem(
@@ -36,13 +41,24 @@ function App() {
   };
 
   const filteredExpenses =
-    selectedCategory === "All"
-      ? expenses
-      : expenses.filter(
-          (expense) =>
-            expense.category ===
-            selectedCategory
-        );
+    expenses.filter((expense) => {
+      const matchesCategory =
+        selectedCategory === "All" ||
+        expense.category ===
+          selectedCategory;
+
+      const matchesSearch =
+        expense.title
+          .toLowerCase()
+          .includes(
+            searchTerm.toLowerCase()
+          );
+
+      return (
+        matchesCategory &&
+        matchesSearch
+      );
+    });
 
   return (
     <div className="container">
@@ -51,6 +67,10 @@ function App() {
       <ExpenseForm addExpense={addExpense} />
 
       <Summary expenses={expenses} />
+      <ExportButton
+  expenses={expenses}
+/>
+      <ExpenseChart expenses={expenses} />
 
       <div className="filter-container">
         <label>
@@ -85,6 +105,19 @@ function App() {
             Entertainment
           </option>
         </select>
+      </div>
+
+      <div className="search-container">
+        <input
+          type="text"
+          placeholder="Search expenses..."
+          value={searchTerm}
+          onChange={(e) =>
+            setSearchTerm(
+              e.target.value
+            )
+          }
+        />
       </div>
 
       <ExpenseList
