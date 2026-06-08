@@ -21,6 +21,9 @@ function App() {
   const [searchTerm, setSearchTerm] =
     useState("");
 
+  const [editingExpense, setEditingExpense] =
+    useState(null);
+
   useEffect(() => {
     localStorage.setItem(
       "expenses",
@@ -30,6 +33,19 @@ function App() {
 
   const addExpense = (expense) => {
     setExpenses([...expenses, expense]);
+  };
+
+  const updateExpense = (
+    updatedExpense
+  ) => {
+    setExpenses(
+      expenses.map((expense) =>
+        expense.id ===
+        updatedExpense.id
+          ? updatedExpense
+          : expense
+      )
+    );
   };
 
   const deleteExpense = (id) => {
@@ -64,13 +80,24 @@ function App() {
     <div className="container">
       <h1>Expense Tracker</h1>
 
-      <ExpenseForm addExpense={addExpense} />
+      <ExpenseForm
+        addExpense={addExpense}
+        updateExpense={updateExpense}
+        editingExpense={editingExpense}
+        setEditingExpense={
+          setEditingExpense
+        }
+      />
 
       <Summary expenses={expenses} />
+
       <ExportButton
-  expenses={expenses}
-/>
-      <ExpenseChart expenses={expenses} />
+        expenses={expenses}
+      />
+
+      <ExpenseChart
+        expenses={expenses}
+      />
 
       <div className="filter-container">
         <label>
@@ -88,19 +115,15 @@ function App() {
           <option value="All">
             All
           </option>
-
           <option value="Food">
             Food
           </option>
-
           <option value="Travel">
             Travel
           </option>
-
           <option value="Shopping">
             Shopping
           </option>
-
           <option value="Entertainment">
             Entertainment
           </option>
@@ -123,6 +146,9 @@ function App() {
       <ExpenseList
         expenses={filteredExpenses}
         deleteExpense={deleteExpense}
+        setEditingExpense={
+          setEditingExpense
+        }
       />
     </div>
   );

@@ -1,6 +1,7 @@
 function ExpenseItem({
   expense,
   deleteExpense,
+  setEditingExpense,
 }) {
   return (
     <div className="expense-card">
@@ -20,6 +21,14 @@ function ExpenseItem({
           expense.date
         ).toLocaleDateString()}
       </p>
+
+      <button
+        onClick={() =>
+          setEditingExpense(expense)
+        }
+      >
+        Edit
+      </button>
 
       <button
         onClick={() =>
